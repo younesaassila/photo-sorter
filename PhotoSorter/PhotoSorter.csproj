@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Authors>Younes Aassila</Authors>
+    <Company>Younes Aassila</Company>
+    <Product>Photo Sorter</Product>
+    <Copyright>(c) Younes Aassila. All rights reserved.</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoSorterLibrary\PhotoSorterLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
