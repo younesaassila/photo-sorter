@@ -14,9 +14,10 @@ namespace PhotoSorter
 			PrintProductInfo();
 			Console.WriteLine();
 
-			string path = args.Length > 0 ? args[0] : "";
+			string path = args.Length > 0 ? Array.Find(args, arg => !arg.StartsWith('-')) : "";
+			bool? sortVideos = args.Length > 0 ? Array.Exists(args, arg => arg == "-v" || arg == "--videos") : null;
 
-			while (!Directory.Exists(path))
+			while (path == null || !Directory.Exists(path))
 			{
 				if (!string.IsNullOrWhiteSpace(path))
 				{
@@ -26,7 +27,13 @@ namespace PhotoSorter
 				path = Console.ReadLine().Trim();
 			}
 
-			Sorter.SortDirectory(path);
+			if (sortVideos == null)
+			{
+				Console.Write("Would you like to sort videos? (y/N) ");
+				sortVideos = Console.ReadLine().Trim().ToLower().StartsWith('y');
+			}
+
+			Sorter.SortDirectory(path, (bool)sortVideos);
 		}
 
 		static void PrintProductInfo()

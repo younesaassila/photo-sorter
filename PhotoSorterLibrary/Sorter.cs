@@ -8,12 +8,16 @@ namespace PhotoSorterLibrary
 {
 	public class Sorter
 	{
-		public static void SortDirectory(string path)
+		public static void SortDirectory(string path, bool sortVideos)
 		{
 			Logs.Clear();
 			Logs.Write($"Sorting directory '{path}'...");
+			Logs.Write($"`sortVideos` set to '{sortVideos}'.");
 			SortImages(path);
-			SortVideos(path);
+			if (sortVideos)
+			{
+				SortVideos(path);
+			}
 			Logs.SaveFile(path);
 		}
 
