@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
+    <Version>1.0.1</Version>
     <Authors>Younes Aassila</Authors>
     <Company>Younes Aassila</Company>
     <Product>Photo Sorter</Product>
