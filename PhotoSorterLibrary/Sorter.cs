@@ -79,7 +79,7 @@ namespace PhotoSorterLibrary
 
 			string srcDirPath = Path.GetDirectoryName(filePath);
 
-			Regex destDirRegex = new(@$"{year}-[\d,]*{month}[^\\/]*$");
+			Regex destDirRegex = new(@$"{year}-[\d,]*{month}[^\\/‒]*$");
 
 			string destDirPath = Directory.GetDirectories(srcDirPath)
 				.Where(dir => destDirRegex.IsMatch(dir))
