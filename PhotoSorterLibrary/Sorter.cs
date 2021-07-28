@@ -92,8 +92,8 @@ namespace PhotoSorterLibrary
 				.FirstOrDefault();
 			if (destDirPath == null)
 				destDirPath = Directory.CreateDirectory(Path.Join(srcDirPath, $"{year}-{month}")).FullName;
-			if (!destDirPath.EndsWith(Path.PathSeparator))
-				destDirPath = $"{destDirPath}{Path.PathSeparator}";
+			if (!destDirPath.EndsWith(Path.DirectorySeparatorChar))
+				destDirPath = $"{destDirPath}{Path.DirectorySeparatorChar}";
 
 			bool fileAlreadyExists = Directory.GetFiles(destDirPath, $"{Path.GetFileNameWithoutExtension(filePath)}.*").Length > 0;
 
