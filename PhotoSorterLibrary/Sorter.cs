@@ -74,27 +74,32 @@ namespace PhotoSorterLibrary
 		static void SortFile(string filePath, DateTime date)
 		{
 			FileInfo fileInfo = new(filePath);
-			string sourcePath = Path.GetDirectoryName(filePath);
 			string year = date.Year.ToString();
 			string month = date.Month.ToString("00");
 
-			Regex dirRegex = new(@$"{year}-[\d,]*{month}[^\\/]*$");
+			string srcDirPath = Path.GetDirectoryName(filePath);
 
-			string dirPath = Directory.GetDirectories(sourcePath)
-				.Where(dir => dirRegex.IsMatch(dir))
+			Regex destDirRegex = new(@$"{year}-[\d,]*{month}[^\\/]*$");
+
+			string destDirPath = Directory.GetDirectories(srcDirPath)
+				.Where(dir => destDirRegex.IsMatch(dir))
 				.OrderBy(dir => dir.Length)
 				.ToArray()
 				.FirstOrDefault();
-			if (dirPath == null)
-				dirPath = Directory.CreateDirectory(Path.Join(sourcePath, $"{year}-{month}")).FullName;
+			if (destDirPath == null)
+				destDirPath = Directory.CreateDirectory(Path.Join(srcDirPath, $"{year}-{month}")).FullName;
+			if (!destDirPath.EndsWith(Path.PathSeparator))
+				destDirPath = $"{destDirPath}{Path.PathSeparator}";
 
-			try
+			bool fileAlreadyExists = Directory.GetFiles(destDirPath, $"{Path.GetFileNameWithoutExtension(filePath)}.*").Length > 0;
+
+			if (!fileAlreadyExists)
 			{
-				File.Move(filePath, Path.Join(dirPath, fileInfo.Name));
+				File.Move(filePath, Path.Join(destDirPath, fileInfo.Name));
 			}
-			catch
+			else
 			{
-				string directoryName = Path.GetFileName(Path.GetDirectoryName(dirPath));
+				string directoryName = Path.GetFileName(Path.GetDirectoryName(destDirPath));
 				Logs.Write($"'{fileInfo.Name}' already exists in directory '{directoryName}'.");
 			}
 		}
