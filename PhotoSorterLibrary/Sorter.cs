@@ -63,12 +63,17 @@ namespace PhotoSorterLibrary
 				if (dateEncoded != null)
 				{
 					DateTime dateCreated = File.GetCreationTime(video);
-					if (dateEncoded - dateCreated > new TimeSpan(0, 1, 0))
+					TimeSpan? timeSpan = dateEncoded - dateCreated;
+					if (timeSpan > new TimeSpan(0, 0, 0) && timeSpan < new TimeSpan(0, 1, 0))
+					{
+						MoveFile(video, dateEncoded.Value);
+					}
+					else
 					{
 						Logger.Write($"Date encoded for '{fileInfo.Name}' is likely incorrect.");
 						return;
 					}
-					MoveFile(video, dateEncoded.Value);
+
 				}
 				else
 				{
