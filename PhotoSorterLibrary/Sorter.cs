@@ -10,15 +10,11 @@ namespace PhotoSorterLibrary
 	{
 		public static void SortDirectory(string path, bool sortVideos)
 		{
-			Logs.Clear();
-			Logs.Write($"Sorting directory '{path}'...");
-			Logs.Write($"`sortVideos` set to '{sortVideos}'.");
+			Logger.Clear();
+			Logger.Write($"Sorting directory '{path}'... (images {(sortVideos ? "and videos" : "only")})");
 			SortImages(path);
-			if (sortVideos)
-			{
-				SortVideos(path);
-			}
-			Logs.SaveFile(path);
+			if (sortVideos) SortVideos(path);
+			Logger.SaveLogFile(path);
 		}
 
 		static List<string> GetFilesWithExtensions(string path, string[] extensions)
@@ -47,12 +43,12 @@ namespace PhotoSorterLibrary
 				DateTime? dateTaken = DateTimeUtility.GetDateTakenFromImage(image);
 				if (dateTaken != null)
 				{
-					SortFile(image, (DateTime)dateTaken);
+					MoveFile(image, dateTaken.Value);
 				}
 				else
 				{
 					FileInfo fileInfo = new(image);
-					Logs.Write($"Couldn't find date taken for '{fileInfo.Name}'.");
+					Logger.Write($"Couldn't find date taken for '{fileInfo.Name}'.");
 				}
 			}
 		}
@@ -62,36 +58,42 @@ namespace PhotoSorterLibrary
 			List<string> videos = GetVideos(path);
 			foreach (string video in videos)
 			{
+				FileInfo fileInfo = new(video);
 				DateTime? dateEncoded = DateTimeUtility.GetDateEncodedFromVideo(video);
 				if (dateEncoded != null)
 				{
-					SortFile(video, (DateTime)dateEncoded);
+					DateTime dateCreated = File.GetCreationTime(video);
+					if (dateEncoded - dateCreated > new TimeSpan(0, 1, 0))
+					{
+						Logger.Write($"Date encoded for '{fileInfo.Name}' is likely incorrect.");
+						return;
+					}
+					MoveFile(video, dateEncoded.Value);
 				}
 				else
 				{
-					FileInfo fileInfo = new(video);
-					Logs.Write($"Couldn't find date encoded for '{fileInfo.Name}'.");
+					Logger.Write($"Couldn't find date encoded for '{fileInfo.Name}'.");
 				}
 			}
 		}
 
-		static void SortFile(string filePath, DateTime date)
+		static void MoveFile(string filePath, DateTime date)
 		{
 			FileInfo fileInfo = new(filePath);
 			string year = date.Year.ToString();
 			string month = date.Month.ToString("00");
 
-			string srcDirPath = Path.GetDirectoryName(filePath);
+			string sourceDirPath = Path.GetDirectoryName(filePath);
 
 			Regex destDirRegex = new(@$"{year}-[\d,]*{month}[^\\/‒]*$");
 
-			string destDirPath = Directory.GetDirectories(srcDirPath)
+			string destDirPath = Directory.GetDirectories(sourceDirPath)
 				.Where(dir => destDirRegex.IsMatch(dir))
 				.OrderBy(dir => dir.Length)
 				.ToArray()
 				.FirstOrDefault();
 			if (destDirPath == null)
-				destDirPath = Directory.CreateDirectory(Path.Join(srcDirPath, $"{year}-{month}")).FullName;
+				destDirPath = Directory.CreateDirectory(Path.Join(sourceDirPath, $"{year}-{month}")).FullName;
 			if (!destDirPath.EndsWith(Path.DirectorySeparatorChar))
 				destDirPath = $"{destDirPath}{Path.DirectorySeparatorChar}";
 
@@ -104,7 +106,7 @@ namespace PhotoSorterLibrary
 			else
 			{
 				string directoryName = Path.GetFileName(Path.GetDirectoryName(destDirPath));
-				Logs.Write($"'{fileInfo.Name}' already exists in directory '{directoryName}'.");
+				Logger.Write($"'{fileInfo.Name}' already exists in directory '{directoryName}'.");
 			}
 		}
 	}

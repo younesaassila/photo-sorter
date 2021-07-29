@@ -4,7 +4,7 @@ using System.IO;
 
 namespace PhotoSorterLibrary
 {
-	public class Logs
+	public class Logger
 	{
 		static List<string> logs = new();
 
@@ -19,7 +19,7 @@ namespace PhotoSorterLibrary
 			logs = new List<string>();
 		}
 
-		public static async void SaveFile(string directoryPath)
+		public static async void SaveLogFile(string directoryPath)
 		{
 			if (!Directory.Exists(directoryPath))
 				throw new Exception($"'{directoryPath}' is not a directory.");
