@@ -33,7 +33,7 @@ namespace PhotoSorter
 				sortVideos = Console.ReadLine().Trim().ToLower().StartsWith('y');
 			}
 
-			Sorter.SortDirectory(path, sortVideos.Value);
+			FileSorter.SortDirectory(path, sortVideos.Value);
 		}
 
 		static void PrintProductInfo()

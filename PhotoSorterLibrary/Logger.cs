@@ -1,33 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace PhotoSorterLibrary
 {
 	public class Logger
 	{
-		static List<string> logs = new();
+		static StringBuilder logs = new();
 
-		public static void Write(string line)
+		public static void WriteLine(string line)
 		{
-			logs.Add($"[{DateTime.Now}] {line}");
+			logs.Append($"[{DateTime.Now}] {line}").Append(Environment.NewLine);
 			Console.WriteLine(line);
 		}
 
 		public static void Clear()
 		{
-			logs = new List<string>();
+			logs.Clear();
 		}
 
-		public static async void SaveLogFile(string directoryPath)
+		public static void SaveLog(string directoryPath)
 		{
 			if (!Directory.Exists(directoryPath))
 				throw new Exception($"'{directoryPath}' is not a directory.");
 
 			string logsPath = Path.Join(directoryPath, "photo_sorter.log");
-			if (logs.Count > 0)
+			if (logs.Length > 0)
 			{
-				await File.WriteAllLinesAsync(logsPath, logs);
+				using StreamWriter file = new(logsPath);
+				file.Write(logs.ToString());
+				file.Close();
+				file.Dispose();
 			}
 			else if (File.Exists(logsPath))
 			{
