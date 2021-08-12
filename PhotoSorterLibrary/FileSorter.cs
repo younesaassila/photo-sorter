@@ -29,7 +29,6 @@ namespace PhotoSorterLibrary
 				{
 					FileInfo fileInfo = new(image);
 					Logger.WriteLine($"Couldn't find date taken for '{fileInfo.Name}'.");
-					return;
 				}
 			}
 		}
@@ -52,13 +51,11 @@ namespace PhotoSorterLibrary
 					else
 					{
 						Logger.WriteLine($"Date encoded for '{fileInfo.Name}' is likely incorrect.");
-						return;
 					}
 				}
 				else
 				{
 					Logger.WriteLine($"Couldn't find date encoded for '{fileInfo.Name}'.");
-					return;
 				}
 			}
 		}
@@ -83,7 +80,6 @@ namespace PhotoSorterLibrary
 			{
 				string directoryName = Path.GetFileName(Path.GetDirectoryName(destDirPath));
 				Logger.WriteLine($"'{fileInfo.Name}' already exists in directory '{directoryName}'.");
-				return;
 			}
 		}
 	}
