@@ -17,7 +17,7 @@ namespace PhotoSorterLibrary
 
 		public static List<string> GetImages(string path)
 		{
-			return GetFilesWithExtensions(path, new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".raw" });
+			return GetFilesWithExtensions(path, new[] { ".jpg", ".jpeg", ".png", ".gif", ".tif", ".tiff", ".heif", ".heic", ".raw" });
 		}
 
 		public static List<string> GetVideos(string path)
